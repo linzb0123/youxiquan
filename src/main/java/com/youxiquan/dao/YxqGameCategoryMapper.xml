@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youxiquan.dao.YxqGameCategoryMapper">
+  <resultMap id="BaseResultMap" type="com.youxiquan.pojo.YxqGameCategory">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="game_id" jdbcType="BIGINT" property="gameId" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="game_photo" jdbcType="VARCHAR" property="gamePhoto" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, game_id, game_name, game_photo, type
+  </sql>
+  <select id="selectByExample" parameterType="com.youxiquan.pojo.YxqGameCategoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from yxq_game_category
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from yxq_game_category
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from yxq_game_category
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.youxiquan.pojo.YxqGameCategoryExample">
+    delete from yxq_game_category
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.youxiquan.pojo.YxqGameCategory">
+    insert into yxq_game_category (id, game_id, game_name, 
+      game_photo, type)
+    values (#{id,jdbcType=BIGINT}, #{gameId,jdbcType=BIGINT}, #{gameName,jdbcType=VARCHAR}, 
+      #{gamePhoto,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.youxiquan.pojo.YxqGameCategory">
+    insert into yxq_game_category
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="gameId != null">
+        game_id,
+      </if>
+      <if test="gameName != null">
+        game_name,
+      </if>
+      <if test="gamePhoto != null">
+        game_photo,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gameId != null">
+        #{gameId,jdbcType=BIGINT},
+      </if>
+      <if test="gameName != null">
+        #{gameName,jdbcType=VARCHAR},
+      </if>
+      <if test="gamePhoto != null">
+        #{gamePhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.youxiquan.pojo.YxqGameCategoryExample" resultType="java.lang.Long">
+    select count(*) from yxq_game_category
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update yxq_game_category
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.gameId != null">
+        game_id = #{record.gameId,jdbcType=BIGINT},
+      </if>
+      <if test="record.gameName != null">
+        game_name = #{record.gameName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gamePhoto != null">
+        game_photo = #{record.gamePhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update yxq_game_category
+    set id = #{record.id,jdbcType=BIGINT},
+      game_id = #{record.gameId,jdbcType=BIGINT},
+      game_name = #{record.gameName,jdbcType=VARCHAR},
+      game_photo = #{record.gamePhoto,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.youxiquan.pojo.YxqGameCategory">
+    update yxq_game_category
+    <set>
+      <if test="gameId != null">
+        game_id = #{gameId,jdbcType=BIGINT},
+      </if>
+      <if test="gameName != null">
+        game_name = #{gameName,jdbcType=VARCHAR},
+      </if>
+      <if test="gamePhoto != null">
+        game_photo = #{gamePhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.youxiquan.pojo.YxqGameCategory">
+    update yxq_game_category
+    set game_id = #{gameId,jdbcType=BIGINT},
+      game_name = #{gameName,jdbcType=VARCHAR},
+      game_photo = #{gamePhoto,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectTypeByGameId"  parameterType="java.lang.Long" resultType="java.lang.String">
+    select a.type from yxq_game_category a where game_id = #{gameId}
+  </select>
+</mapper>

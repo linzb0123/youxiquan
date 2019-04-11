@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youxiquan.dao.YxqGameMapper">
+  <resultMap id="BaseResultMap" type="com.youxiquan.pojo.YxqGame">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.youxiquan.pojo.YxqGame">
+    <result column="info" jdbcType="LONGVARCHAR" property="info" />
+  </resultMap>
+  <resultMap id="BaseResultMap2" type="com.youxiquan.dto.GameDto">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="info" jdbcType="LONGVARCHAR" property="info" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <collection property="types" ofType="java.lang.String">
+      <!--<id column="domain_id" jdbcType="BIGINT" property="id" />-->
+      <result column="types" jdbcType="VARCHAR" property="types" />
+    </collection>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, game_name, photo, create_time, order_num, number, status
+  </sql>
+  <sql id="Blob_Column_List">
+    info
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.youxiquan.pojo.YxqGameExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from yxq_game
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.youxiquan.pojo.YxqGameExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from yxq_game
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from yxq_game
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from yxq_game
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.youxiquan.pojo.YxqGameExample">
+    delete from yxq_game
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.youxiquan.pojo.YxqGame">
+    insert into yxq_game (id, game_name, photo, 
+      create_time, order_num, number, 
+      status, info)
+    values (#{id,jdbcType=BIGINT}, #{gameName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{orderNum,jdbcType=INTEGER}, #{number,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{info,jdbcType=LONGVARCHAR})
+  </insert>
+  <!--
+     keyProperty: 把主键值赋给 bean 的哪一个属性
+     keyColumn: 使用哪一列的值来进行赋值
+     useGeneratedKeys="true": 使用自增的方式来生成主键值
+-->
+  <insert id="insertSelective" parameterType="com.youxiquan.pojo.YxqGame"  keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into yxq_game
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="gameName != null">
+        game_name,
+      </if>
+      <if test="photo != null">
+        photo,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="orderNum != null">
+        order_num,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="info != null">
+        info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="gameName != null">
+        #{gameName,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNum != null">
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="info != null">
+        #{info,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.youxiquan.pojo.YxqGameExample" resultType="java.lang.Long">
+    select count(*) from yxq_game
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update yxq_game
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.gameName != null">
+        game_name = #{record.gameName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.photo != null">
+        photo = #{record.photo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.orderNum != null">
+        order_num = #{record.orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.number != null">
+        number = #{record.number,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.info != null">
+        info = #{record.info,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update yxq_game
+    set id = #{record.id,jdbcType=BIGINT},
+      game_name = #{record.gameName,jdbcType=VARCHAR},
+      photo = #{record.photo,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      order_num = #{record.orderNum,jdbcType=INTEGER},
+      number = #{record.number,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=INTEGER},
+      info = #{record.info,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update yxq_game
+    set id = #{record.id,jdbcType=BIGINT},
+      game_name = #{record.gameName,jdbcType=VARCHAR},
+      photo = #{record.photo,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      order_num = #{record.orderNum,jdbcType=INTEGER},
+      number = #{record.number,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.youxiquan.pojo.YxqGame">
+    update yxq_game
+    <set>
+      <if test="gameName != null">
+        game_name = #{gameName,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        photo = #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderNum != null">
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="info != null">
+        info = #{info,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.youxiquan.pojo.YxqGame">
+    update yxq_game
+    set game_name = #{gameName,jdbcType=VARCHAR},
+      photo = #{photo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      number = #{number,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      info = #{info,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.youxiquan.pojo.YxqGame">
+    update yxq_game
+    set game_name = #{gameName,jdbcType=VARCHAR},
+      photo = #{photo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      number = #{number,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectGameList" parameterType="string" resultMap="BaseResultMap2">
+        SELECT a.*, b.type as types
+        FROM
+        (select * from yxq_game limit #{start},#{length}) a left join yxq_game_category b on  a.id=b.game_id
+        <if test="search != null and search != '%%'">
+            WHERE
+            (a.game_name like #{search}
+            OR
+            a.info like #{search}
+            OR
+            b.type like #{search})
+        </if>
+        ORDER BY
+        ${orderCol}
+        ${orderDir}
+        ,a.id
+    </select>
+  <select id="countGameList" parameterType="string" resultType="java.lang.Long">
+    SELECT count(*)
+    FROM yxq_game a
+    <if test="search != null and search != '%%'">
+      WHERE
+      (a.game_name like #{search}
+      OR
+      a.info like #{search}
+      OR
+      exists (select * from yxq_game_category b where a.id=b.game_id and b.type like #{search})
+      )
+    </if>
+  </select>
+
+  <select id="getFocusGame" parameterType="Long" resultMap="BaseResultMap">
+    select a.* from yxq_user_focus b
+    left join yxq_game a on a.id = b.game_id
+    where b.user_id = #{userId}
+  </select>
+  <select id="getList" resultMap="BaseResultMap">
+    select id,game_name,info,status
+    from yxq_game
+    where status = 0
+  </select>
+
+</mapper>

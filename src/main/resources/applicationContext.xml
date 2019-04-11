@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 引入jdbc配置文件 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:/jdbc.properties</value>
+				<value>classpath*:/resourse.properties</value>
+				<!--要是有多个配置文件，只需在这里继续添加即可 -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<!-- 基本属性 url、user、password -->
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="20" />
+		<property name="maxWait" value="60000" />
+		<!-- 超过时间限制是否回收 -->
+		<property name="removeAbandoned" value="true" />
+		<!-- 超过时间限制多长； -->
+		<property name="removeAbandonedTimeout" value="180" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<!-- 用来检测连接是否有效的sql，要求是一个查询语句-->
+		<property name="validationQuery" value="SELECT 1" />
+		<!-- 申请连接的时候检测 -->
+		<property name="testWhileIdle" value="true" />
+		<!-- 申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+		<property name="testOnBorrow" value="false" />
+		<!-- 归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+		<property name="testOnReturn" value="false" />
+	</bean>
+
+	<!-- jdbc/mybatis事物的控制 -->
+	<bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"  proxy-target-class="true" />
+
+
+	<!--&lt;!&ndash; 配置事务通知属性 &ndash;&gt;-->
+	<!--<tx:advice id="txAdvice" transaction-manager="transactionManager">-->
+		<!--&lt;!&ndash; 定义事务传播属性 &ndash;&gt;-->
+		<!--<tx:attributes>-->
+			<!--<tx:method name="insert*" propagation="REQUIRED" />-->
+			<!--<tx:method name="update*" propagation="REQUIRED" />-->
+			<!--<tx:method name="edit*" propagation="REQUIRED" />-->
+			<!--<tx:method name="save*" propagation="REQUIRED" />-->
+			<!--<tx:method name="add*" propagation="REQUIRED" />-->
+			<!--<tx:method name="new*" propagation="REQUIRED" />-->
+			<!--<tx:method name="set*" propagation="REQUIRED" />-->
+			<!--<tx:method name="remove*" propagation="REQUIRED" />-->
+			<!--<tx:method name="delete*" propagation="REQUIRED" />-->
+			<!--<tx:method name="change*" propagation="REQUIRED" />-->
+			<!--<tx:method name="check*" propagation="REQUIRED" />-->
+			<!--<tx:method name="get*" propagation="REQUIRED" read-only="true" />-->
+			<!--<tx:method name="find*" propagation="REQUIRED" read-only="true" />-->
+			<!--<tx:method name="load*" propagation="REQUIRED" read-only="true" />-->
+			<!--<tx:method name="*" propagation="REQUIRED" read-only="true" />-->
+		<!--</tx:attributes>-->
+	<!--</tx:advice>-->
+
+	<!--&lt;!&ndash; 配置事务切面 &ndash;&gt;-->
+	<!--<aop:config>-->
+		<!--<aop:pointcut id="serviceOperation"-->
+					  <!--expression="execution(* com.youxiquan.service.*.*(..))" />-->
+		<!--<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />-->
+	<!--</aop:config>-->
+	<!-- 自动扫描了所有的XxxxMapper.xml对应的mapper接口文件，这样就不用一个一个手动配置Mpper的映射了，只要Mapper接口类和Mapper映射文件对应起来就可以了。 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"  value="com.youxiquan.dao" />
+		<!--<property name="annotationClass" value="annotation.MybatisRepository"/>-->
+	</bean>
+
+	<!-- 配置Mybatis的文件 ，mapperLocations配置**Mapper.xml文件位置，configLocation配置mybatis-config文件位置-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml"/>
+		<property name="mapperLocations" value="classpath:com/youxiquan/dao/*.xml" />
+		<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageInterceptor">
+					<!-- 这里的几个配置主要演示如何使用，如果不理解，一定要去掉下面的配置 -->
+					<property name="properties">
+						<value>
+							helperDialect=mysql
+						</value>
+						<!--<value>-->
+						<!--helperDialect=mysql-->
+						<!--reasonable=true-->
+						<!--supportMethodsArguments=true-->
+						<!--params=count=countSql-->
+						<!--autoRuntimeDialect=true-->
+						<!--</value>-->
+					</property>
+				</bean>
+			</array>
+		</property>
+	</bean>
+<!--	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.isea533.mybatis.mapper"/>
+	</bean>-->
+
+	<!-- 自动扫描注解的bean -->
+	<context:component-scan base-package="com.youxiquan.service" >
+		<context:exclude-filter type="annotation"  expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<bean id="wechatConfig" class="com.youxiquan.config.WechatConfig">
+		<property name="appid" value="${wx.appid}" />
+		<property name="appsecret" value="${wx.appsecret}" />
+	</bean>
+
+	<!--&lt;!&ndash; 连接redis单机版 &ndash;&gt;-->
+	<bean id="jedisClientPool" class="com.youxiquan.util.jedis.JedisClientPool">
+		<property name="jedisPool" ref="jedisPool"></property>
+	</bean>
+
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="300"/> <!--最大能够保持idel状态的对象数-->
+		<property name="maxTotal" value="60000"/><!--最大分配的对象数-->
+		<property name="maxWaitMillis" value="2000" />
+		<property name="testOnBorrow" value="true"/><!--当调用borrow Oject方法时，是否进行有效性检查-->
+	</bean>
+
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg name="host" value="127.0.0.1"/>
+		<constructor-arg name="port" value="6379"/>
+	</bean>
+<!--服务号配置-->
+
+	<!--腾讯短信配置-->
+
+</beans>
